@@ -32,14 +32,15 @@ const LoginScreen = ({ navigation }: Props) => {
         }
     }
 
+
     function navigateToRegister() {
         navigation.navigate('RegisterScreen', { screen: 'RegisterScreen' });
     }
 
     return (
         <View style={styles.container}>
-            <Image source={require('../../assets/login.jpg')} style={styles.image} resizeMode='contain' />
-            <Text style={styles.title}>Login</Text>
+            <Image source={require('../../assets/login.png')} style={styles.image} resizeMode='contain' />
+            {/* <Text style={styles.title}>Login</Text> */}
             <View style={styles.inputView}>
                 <TextInput
                     value={email}
@@ -52,7 +53,7 @@ const LoginScreen = ({ navigation }: Props) => {
                     secureTextEntry={true}
                     value={password}
                     style={styles.input}
-                    placeholder='Password'
+                    placeholder='Parola'
                     autoCapitalize="none"
                     onChangeText={(text) => setPassword(text)}
                 />
@@ -64,11 +65,11 @@ const LoginScreen = ({ navigation }: Props) => {
                         onValueChange={setRemember}
                         trackColor={{ true: 'green', false: 'gray' }}
                     />
-                    <Text style={styles.rememberText}>Remember Me</Text>
+                    <Text style={styles.rememberText}>Memorează-mă</Text>
                 </View>
-                <Pressable onPress={() => Alert.alert("Forget Password!")}>
-                    <Text style={styles.forgetText}>Forgot Password?</Text>
-                </Pressable>
+                <Pressable onPress={() => navigation.navigate('ResetPassword')}>
+  <Text style={styles.forgetText}>Ai uitat parola?</Text>
+</Pressable>
             </View>
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
@@ -78,13 +79,13 @@ const LoginScreen = ({ navigation }: Props) => {
                         onPress={signIn}
                         style={[styles.button, { backgroundColor: '#D6CDEA' }]}
                     >
-                        <Text style={styles.buttonText}>Login</Text>
+                        <Text style={styles.buttonText}>Autentificare</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => navigation.navigate('Register')}
                         style={[styles.button, { backgroundColor: '#D6CDEA' }]}
                     >
-                        <Text style={styles.buttonText}>Register</Text>
+                        <Text style={styles.buttonText}>Înregistrare</Text>
                     </TouchableOpacity>
                 </View>
             )}
