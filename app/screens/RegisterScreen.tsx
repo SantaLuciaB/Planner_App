@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, ActivityIndicator, TouchableOpacity, SafeAreaView, Alert,Image } from 'react-native';
+import { View, Text, StyleSheet, TextInput, ActivityIndicator, TouchableOpacity, SafeAreaView, Alert, Image } from 'react-native';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -31,7 +31,7 @@ const RegisterScreen = ({ navigation }: Props) => {
         if (currentUser) {
           await sendEmailVerification(currentUser);
           Alert.alert('Success', 'Verification email sent. Please check your inbox.');
-          navigation.navigate('Login', { screen: 'Login' });
+          navigation.navigate('List'); // Accesează pagina List.tsx după înregistrare cu succes
         } else {
           Alert.alert('Error', 'User not authenticated.');
         }

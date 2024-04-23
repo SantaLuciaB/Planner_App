@@ -4,7 +4,7 @@ import { Checkbox } from 'expo-checkbox';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
-import { getDocs, collection, query, where, deleteDoc, doc, updateDoc, addDoc, Timestamp } from 'firebase/firestore';
+import { getDocs, collection, query, where, deleteDoc, doc, updateDoc, Timestamp, addDoc } from 'firebase/firestore';
 import { FIREBASE_DB } from '../../FirebaseConfig';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -37,6 +37,11 @@ const DetailsScreen = ({ navigation, route }: Props) => {
       loadCheckedItems();
     }
   }, [date]);
+
+  useEffect(() => {
+    // Salvăm starea checkbox-urilor atunci când se schimbă
+    saveCheckedItems(checkedItems);
+  }, [checkedItems]);
 
   const loadPlansForDate = async (selectedDate: string) => {
     const q = query(collection(FIREBASE_DB, 'events'), where('date', '==', selectedDate));
@@ -85,24 +90,6 @@ const DetailsScreen = ({ navigation, route }: Props) => {
       ? checkedItems.filter((item) => item !== id)
       : [...checkedItems, id];
     setCheckedItems(updatedCheckedItems);
-    saveCheckedItems(updatedCheckedItems);
-  };
-
-  const handleEdit = async (id: string, updatedPlan: string) => {
-    try {
-      await updateDoc(doc(FIREBASE_DB, 'events', id), { plan: updatedPlan });
-      setPlans(plans.map((p) => p.id === id ? { ...p, plan: updatedPlan } : p));
-    } catch (error) {
-      console.error('Error updating plan:', error);
-    }
-  };
-
-  const handleStarToggle = async (id: string) => {
-    const updatedPlan = plans.find((p) => p.id === id);
-    if (updatedPlan) {
-      await updateDoc(doc(FIREBASE_DB, 'events', id), { starred: !updatedPlan.starred });
-      setPlans(plans.map((p) => p.id === id ? { ...p, starred: !p.starred } : p));
-    }
   };
 
   const handleDelete = async (id: string) => {
@@ -117,6 +104,10 @@ const DetailsScreen = ({ navigation, route }: Props) => {
       loadPlansForDate(date);
     }
   };
+
+  function handleStarToggle(id: string): void {
+    throw new Error('Function not implemented.');
+  }
 
   return (
     <View style={styles.container}>
@@ -140,9 +131,6 @@ const DetailsScreen = ({ navigation, route }: Props) => {
             />
             <Text style={plan.done ? styles.doneText : styles.planText}>{plan.plan}</Text>
             <Text style={styles.hourText}>Ora: {plan.hour}</Text>
-            <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(plan.id, plan.plan)}>
-              <Ionicons name="create-outline" size={24} color="gray" />
-            </TouchableOpacity>
             <TouchableOpacity style={styles.starButton} onPress={() => handleStarToggle(plan.id)}>
               <Ionicons name={plan.starred ? 'star' : 'star-outline'} size={24} color="gold" />
             </TouchableOpacity>
@@ -221,9 +209,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'gray',
     textDecorationLine: 'line-through',
-  },
-  editButton: {
-    marginLeft: 10,
   },
   starButton: {
     marginLeft: 10,

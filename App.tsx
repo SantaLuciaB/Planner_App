@@ -3,7 +3,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_AUTH } from './FirebaseConfig';
-import InsideLayout from './navigators/InsideLayout';
 import SplashScreen from './components/SplashScreen';
 import LoginScreen from './app/screens/Login';
 import RegisterScreen from './app/screens/RegisterScreen';
@@ -42,7 +41,6 @@ export default function App() {
         <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
         {user ? (
           <>
-            <Stack.Screen name='Inside' component={InsideLayout} options={{ headerShown: false }} />
             <Stack.Screen name='List' component={List} options={{ headerShown: false }} />
             <Stack.Screen name='details' component={Detailsd} options={{ headerShown: false }} />
           </>

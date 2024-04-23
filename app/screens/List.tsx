@@ -80,6 +80,8 @@ const List = ({ navigation }: RouterProps) => {
         return dayPlans.length;
     }, [dayPlans]);
 
+    const formattedDate = selectedDate ? new Date(selectedDate).toLocaleDateString('ro-RO') : '';
+
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 20, paddingTop: 60, paddingBottom: 40, backgroundColor: '#f5f5f5' }}>
             <Text style={styles.titleText}>Ce planuri ai?</Text>
@@ -104,12 +106,11 @@ const List = ({ navigation }: RouterProps) => {
                     },
                 }}
             />
-            {selectedDate && (
-                <View>
-                
-                    <Text style={styles.addPlanText}>Adaugă un plan nou pentru data de: {selectedDate}</Text>
-                </View>
-            )}
+          {selectedDate && (
+        <View>
+            <Text style={styles.addPlanText}>Adaugă un plan nou pentru data de: {formattedDate} :</Text>
+        </View>
+    )}
             <View style={styles.formContainer}>
                 <TextInput
                     placeholder="Introdu un plan"
@@ -151,8 +152,8 @@ const List = ({ navigation }: RouterProps) => {
                 </TouchableOpacity>
             </View>
             <Text style={styles.plansCountText}>
-                        Pentru {selectedDate} ai {plansCountForSelectedDate} planuri.
-                    </Text>
+        Pentru {formattedDate} ai {plansCountForSelectedDate} planuri.
+    </Text>
             {/* <ScrollView style={{ marginTop: 20 }}>
                 {dayPlans.map((dayPlan) => (
                     <View key={dayPlan.id} style={styles.planContainer}>
