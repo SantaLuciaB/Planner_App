@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, ActivityIndicator, TouchableOpacity, KeyboardAvoidingView, Image, Pressable, Switch, Alert } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import RegisterScreen from './RegisterScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 type Props = {
     navigation: NativeStackNavigationProp<any>;
@@ -22,6 +24,13 @@ const LoginScreen = ({ navigation }: Props) => {
             const response = await signInWithEmailAndPassword(auth, email, password);
             console.log(response);
             if (response) {
+                if (remember) {
+                    // Salvăm email-ul și parola în AsyncStorage
+                    await AsyncStorage.setItem('userCredentials', JSON.stringify({ email, password }));
+                } else {
+                    // Ștergem datele de autentificare salvate dacă utilizatorul nu dorește să fie memorat
+                    await AsyncStorage.removeItem('userCredentials');
+                }
                 navigation.navigate('List', { screen: 'List' });
             }
         } catch (error: any) {
@@ -31,6 +40,24 @@ const LoginScreen = ({ navigation }: Props) => {
             setLoading(false);
         }
     }
+    useEffect(() => {
+        const loadSavedCredentials = async () => {
+            try {
+                const savedCredentials = await AsyncStorage.getItem('userCredentials');
+                if (savedCredentials !== null) {
+                    const { email, password } = JSON.parse(savedCredentials);
+                    setEmail(email);
+                    setPassword(password);
+                    setRemember(true);
+                }
+            } catch (error) {
+                console.error('Error loading saved credentials:', error);
+            }
+        };
+    
+        loadSavedCredentials();
+    }, []);
+    
 
 
     function navigateToRegister() {
